@@ -2,14 +2,14 @@
 #  shell: docker run -d -p 49160:22 -p 49161:1521 -e ORACLE_ALLOW_REMOTE=true    -v /vagrant/oracle/data:/u01/app/oracle    wnameless/oracle-xe-11g:14.04.4 
   docker_container:
     name: oracledb
-    image: wnameless/oracle-xe-11g:14.04.4 
+    image: sath89/oracle-12c
     ports: 
     - "1521:1521"
     env:
       ORACLE_ALLOW_REMOTE: true
-      processes: 1000
-      sessions: 1105
-      transactions: 1215
+      #processes: 1000
+      #sessions: 1105
+      #transactions: 1215
     volumes:
       - /data/oracle/data:/u01/app/oracle
 #      - /data/oracle/init/sh_sql_dmp_files:/docker-entrypoint-initdb.d
