@@ -32,7 +32,7 @@
   file: 
       path: /opt/tomcat 
       state: link 
-      src: "{{tomcat_install_dir }}/apache-tomcat-{{tomcat_version}"
+      src: "{{tomcat_install_dir }}/apache-tomcat-{{tomcat_version}}"
   when: copy_result|changed == True
   tags: [tomcat]
 
