@@ -1,6 +1,6 @@
 - name: OracleDBXE is running
 #  shell: docker run -d -p 49160:22 -p 49161:1521 -e ORACLE_ALLOW_REMOTE=true    -v /vagrant/oracle/data:/u01/app/oracle    wnameless/oracle-xe-11g:14.04.4 
-  container:
+  docker:
     name: oracledb
     image: sath89/oracle-xe-11g
     ports: 
