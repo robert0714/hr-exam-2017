@@ -11,7 +11,7 @@
 
 - name: Download Tomcat Standalone
   get_url: 
-    url: "http://apache.stu.edu.tw/tomcat/tomcat-7/v{{tomcat_version}}/bin/apache-tomcat-{{tomcat_version}}.tar.gz"
+    url: "http://archive.apache.org/dist/tomcat/tomcat-7/v{{tomcat_version}}/bin/apache-tomcat-{{tomcat_version}}.tar.gz"
     dest: /tmp/
     mode: 0755
   when: tomcat_installed.stat.isdir is not defined
