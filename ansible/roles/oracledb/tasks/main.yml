@@ -12,7 +12,7 @@
       transactions: 1215
     volumes:
       - /data/oracle/data:/u01/app/oracle
-      - /data/oracle/init/sh_sql_dmp_files:/docker-entrypoint-initdb.d
+#      - /data/oracle/init/sh_sql_dmp_files:/docker-entrypoint-initdb.d
   when: not skip_ui is defined
   tags: [oracledb]
 
