@@ -1,5 +1,5 @@
 ---
-tomcat_version: 7.0.75
+tomcat_version: v7.0.77
 apache_url: http://apache.stu.edu.tw
 tomcat_download_url: "{{apache_url}}/tomcat/tomcat-7/v{{tomcat_version}}/bin/apache-tomcat-{{tomcat_version}}.tar.gz"
 tomcat_install_dir: /opt/tomcat
