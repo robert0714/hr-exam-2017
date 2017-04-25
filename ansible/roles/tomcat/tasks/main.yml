@@ -1,0 +1,111 @@
+---
+- name: Create {{tomcat_install_dir}}
+  file: path={{tomcat_install_dir}}
+        state=directory
+  tags: [tomcat]
+
+- name: Check for existing tomcat-standalone installs in {{tomcat_install_dir}}
+  stat: path="{{tomcat_install_dir}}/apache-tomcat-{{tomcat_version}}"
+  register: tomcat_installed
+  tags: [tomcat]
+
+- name: Download Tomcat Standalone
+  get_url: 
+    url: "http://apache.stu.edu.tw/tomcat/tomcat-7/v{{tomcat_version}}/bin/apache-tomcat-{{tomcat_version}}.tar.gz"
+    dest: /tmp/
+    mode: 0755
+  when: tomcat_installed.stat.isdir is not defined
+  register: copy_result
+  tags: [tomcat]
+
+ 
+- name: Extract Tomcat Standalone {{tomcat_install_dir}}/apache-tomcat-{{tomcat_version}}
+  unarchive: 
+     copy: no
+     creates: "{{tomcat_install_dir}}/apache-tomcat-{{tomcat_version}}"
+     dest: "{{tomcat_install_dir}}"
+     src: "/tmp/apache-tomcat-{{tomcat_version}}.tar.gz"
+  register: user_result
+  tags: [tomcat]
+
+- name: Create tomcat symlink
+  file: 
+      path: /opt/tomcat 
+      state: link 
+      src: "{{tomcat_install_dir }}/apache-tomcat-{{tomcat_version}"
+  when: copy_result|changed == True
+  tags: [tomcat]
+
+- name: Create tomcat group
+  group: name=tomcat state=present
+  tags: [tomcat]
+ 
+
+- name: Create tomcat user
+  user: 
+    name: "{{tomcat_user}}" 
+    home: "{{tomcat_install_dir }}/apache-tomcat-{{tomcat_version}}" 
+    password: "{{ tomcat_password |password_hash('sha512') }}"
+    uid: "{{ tomcat_uid }}"
+    shell: /bin/sh 
+    group: tomcat 
+    state: present
+    append: yes
+  ignore_errors: True
+  tags: [tomcat]
+
+- name: Create tomcat init script
+  template: 
+     src: tomcat.sh 
+     dest: /etc/init.d/tomcat 
+     owner: root 
+     group: root 
+     mode: 0766
+  when: ansible_os_family == 'RedHat'
+  tags: [tomcat]
+
+- name: Delete temporary tomcat file
+  file: 
+     path: "/tmp/apache-tomcat-{{ tomcat_version }}.tar.gz"
+     state: absent
+  ignore_errors: yes
+  tags: [tomcat]
+
+- name: Set tomcat file permissions
+  file: 
+     path: "{{tomcat_install_dir }}/apache-tomcat-{{tomcat_version}}" 
+     owner: "{{ tomcat_user }}"
+     group: tomcat 
+     recurse: yes
+  tags: [tomcat]
+
+- name: Configure Tomcat users
+  template: 
+     src: tomcat-users.xml 
+     dest: "{{tomcat_install_dir }}/apache-tomcat-{{tomcat_version}}/conf/"
+  tags: [tomcat]
+
+- name: Insert server.xml config
+  template: 
+    src: server.xml.j2
+    dest: "{{tomcat_install_dir}}/apache-tomcat-{{tomcat_version}}/conf/server.xml"
+
+- name: Insert service config
+  template: 
+    src: tomcat_standalone.j2 
+    dest: "/etc/init.d/{{tomcat_service}}"
+    mode: 0755
+    owner: root
+    group: root
+  tags: [tomcat]
+
+- name: Tomcat service is restarted
+  service:
+    name: "{{tomcat_service}}"
+    state: restarted
+  tags: [tomcat]
+
+
+
+
+
