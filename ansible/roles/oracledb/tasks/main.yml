@@ -5,7 +5,7 @@
     image: sath89/oracle-xe-11g
     ports: 
     - "49162:8080"
-    - "49161:1521"
+    - "1521:1521"
     - "49160:22"
 #    privileged: yes
     env:
