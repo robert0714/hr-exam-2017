@@ -1,0 +1,12 @@
+name: Tomcat is running
+  docker_container:
+    restart_policy: always
+    image: dordoka/tomcat
+    name: tomcat8
+    ports: 
+     - "8080:8080"
+     - "8009:8009"
+    privileged: yes
+    volumes:
+      - /data/tomcat/webapps:/opt/tomcat/webapps  
+  tags: [tomcat]
